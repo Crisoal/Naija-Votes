@@ -1,5 +1,5 @@
 <?php 
 
-    $db = mysqli_connect("localhost", "root", "", "naija-votes") or die("Connectivity Failed");
+    $db = mysqli_connect("localhost", "root", "", "9jaVotes") or die("Connectivity Failed");
 
 ?>

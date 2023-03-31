@@ -4,7 +4,7 @@
     {
 ?>
         <div class="alert alert-success my-3" role="alert">
-            Election has been added successfully.
+            The election has been added successfully.
         </div>
 <?php 
     }else if(isset($_GET['delete_id']))
@@ -13,7 +13,7 @@
         mysqli_query($db, "DELETE FROM elections WHERE id = '". $d_id ."'") OR die(mysqli_error($db));
 ?>
        <div class="alert alert-danger my-3" role="alert">
-            Election has been deleted successfully!
+            The election has been deleted successfully!
         </div>
 <?php
 
@@ -25,7 +25,7 @@
 
 <div class="row my-3">
     <div class="col-4">
-        <h3>Add New Election</h3>
+        <h3>Add a New Election</h3>
         <form method="POST">
             <div class="form-group">
                 <input type="text" name="election_topic" placeholder="Elction Topic" class="form-control" required />
@@ -101,7 +101,7 @@
 <script>
     const DeleteData = (e_id) => 
     {
-        let c = confirm("Are you really want to delete it?");
+        let c = confirm("Are you really sure you want to delete it?");
 
         if(c == true)
         {

@@ -62,7 +62,7 @@
                             }
                         }else {
                     ?>
-                            <option value=""> Please add election first </option>
+                            <option value=""> Please add an election first </option>
                     <?php
                         }
                     ?>
@@ -152,7 +152,7 @@
         $inserted_on = date("Y-m-d");
 
         // Photograph Logic Starts
-        $targetted_folder = "../assets/images/candidate_photos/";
+        $targetted_folder = "../user/img/63f9d69b32da6.jpg";
         $candidate_photo = $targetted_folder . rand(111111111, 99999999999) . "_" . rand(111111111, 99999999999) . $_FILES['candidate_photo']['name'];
         $candidate_photo_tmp_name = $_FILES['candidate_photo']['tmp_name'];
         $candidate_photo_type = strtolower(pathinfo($candidate_photo, PATHINFO_EXTENSION));

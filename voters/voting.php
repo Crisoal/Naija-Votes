@@ -5,7 +5,7 @@
 
     <div class="row my-3">
         <div class="col-12">
-            <h3> Voters Dashboard</h3>
+            <h3> Voters Dashboard </h3>
 
             <?php 
                 $fetchingActiveElections = mysqli_query($db, "SELECT * FROM elections WHERE status = 'Active'") or die(mysqli_error($db));
@@ -62,7 +62,7 @@
                                                 {
                                     ?>
 
-                                                    <img src="../assets/images/vote.png" width="100px;">
+                                                    <img src="../user/img/user/63f9d69b32da6.jpg" width="100px;">
                                     <?php
                                                 }
                                             }else {
@@ -107,9 +107,9 @@
                 
                 if(response == "Success")
                 {
-                    location.assign("index.php?voteCasted=1");
+                    location.assign("voting.php?voteCasted=1");
                 }else {
-                    location.assign("index.php?voteNotCasted=1");
+                    location.assign("voting.php?voteNotCasted=1");
                 }
             }
         });

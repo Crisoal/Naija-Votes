@@ -1,4 +1,46 @@
+<?php 
+    require_once("../../admin/inc/config.php");
 
+    $fetchingElections = mysqli_query($db, "SELECT * FROM elections") OR die(mysqli_error($db));
+    while($data = mysqli_fetch_assoc($fetchingElections))
+    {
+        $stating_date = $data['starting_date'];
+        $ending_date = $data['ending_date'];
+        $curr_date = date("Y-m-d");
+        $election_id = $data['id'];
+        $status = $data['status'];
+
+        // Active = Expire = Ending Date
+        // InActive = Active = Starting Date
+
+        if($status == "Active")
+        {
+            $date1=date_create($curr_date);
+            $date2=date_create($ending_date);
+            $diff=date_diff($date1,$date2);
+            
+            if((int)$diff->format("%R%a") < 0)
+            {
+                // Update! 
+                mysqli_query($db, "UPDATE elections SET status = 'Expired' WHERE id = '". $election_id ."'") OR die(mysqli_error($db));
+            }
+        }else if($status == "InActive")
+        {
+            $date1=date_create($curr_date);
+            $date2=date_create($stating_date);
+            $diff=date_diff($date1,$date2);
+            
+
+            if((int)$diff->format("%R%a") <= 0)
+            {
+                // Update! 
+                mysqli_query($db, "UPDATE elections SET status = 'Active' WHERE id = '". $election_id ."'") OR die(mysqli_error($db));
+            }
+        }
+        
+
+    }
+?>
 
 
 
@@ -12,6 +54,8 @@
     <title>naijaVotes/Login</title>
 
     <link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="../css/dash.css">
+
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
@@ -53,7 +97,7 @@
                             <a class="nav-link" href="../html/registration.html">Registration</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="../user/php/login.php">Vote Here</a>
+                            <a class="nav-link active" aria-current="page" href="../php/login.php">Vote Here</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="../html/about.html">About</a>
@@ -95,12 +139,6 @@
                     </div>
 
                     <div class="input-box">
-                        <span class="icon"><i class="fa-solid fa-envelope"></i></span>
-                        <input type="email"name="su_email" required>
-                        <label> Email </label>
-                    </div>
-
-                    <div class="input-box">
                         <span class="icon"><i class="fa-solid fa-lock"></i> </span>
                         <input type="password" name="su_password" required>
                         <label> Password </label>
@@ -117,13 +155,15 @@
                         <!--<label><a href="#">Login via SMS</a></label>-->
 
                     </div>
-                    <button type="submit" class="button login_btn"  name="sign_up_btn"> Register </button>
-                    <div class="login-register">    
-                            <a href="../php/login/php" class="login-link"> Already have an account?</a>             
-                    </div>
+                    <button type="submit" class="btn login_btn"  name="sign_up_btn"> Register </button>
+                    
 
                 </form>
             </div>  
+
+            <div class="login-register">    
+                            <a href="../php/login/php" class="login-link"> Already have an account?</a>             
+                    </div>
              <?php    
 
              }else {
@@ -149,15 +189,17 @@
                         <label><a href="#">Login via SMS</a></label>
 
                     </div>
-                    <button type="submit" name="loginBtn" class="button login_btn"> Login </button>
-                    <div class="login-register">
+                    <button type="submit" name="loginBtn" class="btn login_btn"> Login </button>
+                    
+
+                </form>
+            </div>   
+            
+            <div class="login-register">
                         
                             <a href="?sign-up=1" class="register-link"> Don't have an account?</a>
                  
                     </div>
-
-                </form>
-            </div>       
             
             <?php
                     }
@@ -186,6 +228,7 @@
                 ?>
             
         </div>
+                </div>
     </Section>
 
 
@@ -201,14 +244,13 @@
 
 <?php
 
-require_once("admin/inc/config.php");
+require_once("../../admin/inc/config.php");
 
 if(isset($_POST['sign_up_btn']))
 
 {
    $su_username = mysqli_real_escape_string($db, $_POST['su_username']);
    $su_contact_no = mysqli_real_escape_string($db, $_POST['su_contact_no']);
-   $su_email = mysqli_real_escape_string($db, $_POST['su_email']);
    $su_password = mysqli_real_escape_string($db, $_POST['su_password']);
    $su_confirm_password = mysqli_real_escape_string($db, $_POST['su_confirm_password']);
    $user_role = "Voters";
@@ -219,13 +261,13 @@ if(isset($_POST['sign_up_btn']))
                    
       //insert query
 
-      mysqli_query($db, "INSERT INTO users(username, contact_no, email, password, user_role) VALUES('". $su_username ."', '". $su_contact_no ."', '". $su_email ."', '". $su_password ."', '". $user_role ."' )") or die 
+      mysqli_query($db, "INSERT INTO users(username, contact_no, password, user_role) VALUES('". $su_username ."', '". $su_contact_no ."', '". $su_email ."', '". $su_password ."', '". $user_role ."' )") or die 
       (mysqli_error($db));
       ?>
       <script> location.assign("../php/login.php?sign-up=1&registered=1"); </script>
   <?php
 
-  }else {
+  } else {
 ?>
       <script> location.assign("../php/login.php?sign-up=1&invalid=1"); </script>
 <?php
@@ -256,12 +298,12 @@ if(isset($_POST['sign_up_btn']))
           {
               $_SESSION['key'] = "AdminKey";
       ?>
-              <script> location.assign("admin/index.php?homepage=1"); </script>
+              <script> location.assign("../admin/index.php?homepage=1"); </script>
       <?php
           }else {
               $_SESSION['key'] = "VotersKey";
       ?>
-              <script> location.assign("voters/index.php"); </script>
+              <script> location.assign("../voters/index.php"); </script>
       <?php
           }
 
