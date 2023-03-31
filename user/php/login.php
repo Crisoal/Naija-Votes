@@ -119,7 +119,7 @@
                     </div>
                     <button type="submit" class="button login_btn"  name="sign_up_btn"> Register </button>
                     <div class="login-register">    
-                            <a href="../user/php/login/php" class="login-link"> Already have an account?</a>             
+                            <a href="../php/login/php" class="login-link"> Already have an account?</a>             
                     </div>
 
                 </form>
@@ -222,12 +222,12 @@ if(isset($_POST['sign_up_btn']))
       mysqli_query($db, "INSERT INTO users(username, contact_no, email, password, user_role) VALUES('". $su_username ."', '". $su_contact_no ."', '". $su_email ."', '". $su_password ."', '". $user_role ."' )") or die 
       (mysqli_error($db));
       ?>
-      <script> location.assign("../user/php/login.php?sign-up=1&registered=1"); </script>
+      <script> location.assign("../php/login.php?sign-up=1&registered=1"); </script>
   <?php
 
   }else {
 ?>
-      <script> location.assign("../user/php/login.php?sign-up=1&invalid=1"); </script>
+      <script> location.assign("../php/login.php?sign-up=1&invalid=1"); </script>
 <?php
   }
        
@@ -267,14 +267,14 @@ if(isset($_POST['sign_up_btn']))
 
       }else {
   ?>
-          <script> location.assign("index.php?invalid_access=1"); </script>
+          <script> location.assign("../php/login.php?invalid_access=1"); </script>
   <?php
       }
 
 
   }else {
 ?>
-      <script> location.assign("index.php?sign-up=1&not_registered=1"); </script>
+      <script> location.assign("../php/login.php?sign-up=1&not_registered=1"); </script>
 <?php
 
   }
