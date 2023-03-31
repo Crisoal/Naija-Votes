@@ -5,7 +5,7 @@
 
     <div class="row my-3">
         <div class="col-12">
-            <h3> Voters Panel </h3>
+            <h3> Voters Dashboard</h3>
 
             <?php 
                 $fetchingActiveElections = mysqli_query($db, "SELECT * FROM elections WHERE status = 'Active'") or die(mysqli_error($db));
