@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -71,7 +75,7 @@
         <div class="wrapper">
 
         <?php 
-             if(isset($_GET['sign_up_btn']))
+             if(isset($_GET['sign-up']))
              {
 
             ?>
@@ -115,7 +119,7 @@
                     </div>
                     <button type="submit" class="button login_btn"  name="sign_up_btn"> Register </button>
                     <div class="login-register">    
-                            <a href="../user/php/login.php" class="login-link"> Already have an account?</a>             
+                            <a href="../user/php/login/php" class="login-link"> Already have an account?</a>             
                     </div>
 
                 </form>
@@ -145,7 +149,7 @@
                         <label><a href="#">Login via SMS</a></label>
 
                     </div>
-                    <button type="submit" class="button"> Login </button>
+                    <button type="submit" name="loginBtn" class="button login_btn"> Login </button>
                     <div class="login-register">
                         
                             <a href="?sign-up=1" class="register-link"> Don't have an account?</a>
@@ -153,15 +157,33 @@
                     </div>
 
                 </form>
-            </div>
-            <?php 
-             }
-            ?>
+            </div>       
             
+            <?php
+                    }
+                    
+                ?>
 
-        
-        
-
+                <?php 
+                    if(isset($_GET['registered']))
+                    {
+                ?>
+                        <span class=" text-success text-center my-3"> Your account has been created successfully! </span>
+                <?php
+                    }else if(isset($_GET['invalid'])) {
+                ?>
+                        <span class="bg-white text-danger text-center my-3"> Passwords mismatched, please try again! </span>
+                <?php
+                    }else if(isset($_GET['not_registered'])) {
+                ?>
+                        <span class="bg-white text-warning text-center my-3"> Sorry, you are not registered! </span>
+                <?php
+                    }else if(isset($_GET['invalid_access'])) {
+                ?>
+                        <span class="bg-white text-danger text-center my-3"> Invalid username or password! </span>
+                <?php
+                    }
+                ?>
             
         </div>
     </Section>
@@ -179,7 +201,7 @@
 
 <?php
 
-require_once("./admin/inc/config.php");
+require_once("admin/inc/config.php");
 
 if(isset($_POST['sign_up_btn']))
 
@@ -189,6 +211,7 @@ if(isset($_POST['sign_up_btn']))
    $su_email = mysqli_real_escape_string($db, $_POST['su_email']);
    $su_password = mysqli_real_escape_string($db, $_POST['su_password']);
    $su_confirm_password = mysqli_real_escape_string($db, $_POST['su_confirm_password']);
+   $user_role = "Voters";
 
 
    if($su_password == $su_confirm_password)
@@ -198,11 +221,64 @@ if(isset($_POST['sign_up_btn']))
 
       mysqli_query($db, "INSERT INTO users(username, contact_no, email, password, user_role) VALUES('". $su_username ."', '". $su_contact_no ."', '". $su_email ."', '". $su_password ."', '". $user_role ."' )") or die 
       (mysqli_error($db));
-   } else {
+      ?>
+      <script> location.assign("../user/php/login.php?sign-up=1&registered=1"); </script>
+  <?php
+
+  }else {
 ?>
-       <script> location.assign("login.php?sign-up=1&invalid=1") </script>
+      <script> location.assign("../user/php/login.php?sign-up=1&invalid=1"); </script>
 <?php
-   }
+  }
+       
+}else if(isset($_POST['loginBtn']))
+{
+  $contact_no = mysqli_real_escape_string($db, $_POST['contact_no']);
+  $password = mysqli_real_escape_string($db, sha1($_POST['password']));
   
+
+  // Query Fetch / SELECT
+  $fetchingData = mysqli_query($db, "SELECT * FROM users WHERE contact_no = '". $contact_no ."'") or die(mysqli_error($db));
+
+  
+  if(mysqli_num_rows($fetchingData) > 0)
+  {
+      $data = mysqli_fetch_assoc($fetchingData);
+
+      if($contact_no == $data['contact_no'] AND $password == $data['password'])
+      {
+          session_start();
+          $_SESSION['user_role'] = $data['user_role'];
+          $_SESSION['username'] = $data['username'];
+          $_SESSION['user_id'] = $data['id'];
+          
+          if($data['user_role'] == "Admin")
+          {
+              $_SESSION['key'] = "AdminKey";
+      ?>
+              <script> location.assign("admin/index.php?homepage=1"); </script>
+      <?php
+          }else {
+              $_SESSION['key'] = "VotersKey";
+      ?>
+              <script> location.assign("voters/index.php"); </script>
+      <?php
+          }
+
+      }else {
+  ?>
+          <script> location.assign("index.php?invalid_access=1"); </script>
+  <?php
+      }
+
+
+  }else {
+?>
+      <script> location.assign("index.php?sign-up=1&not_registered=1"); </script>
+<?php
+
+  }
+
 }
+
 ?>
