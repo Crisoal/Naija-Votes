@@ -1,10 +1,10 @@
 <?php 
     session_start();
-    require_once("../admin/inc/config.php");
+    require_once("config.php");
 
-    if($_SESSION['key'] != "VotersKey")
+    if($_SESSION['key'] != "AdminKey")
     {
-        echo "<script> location.assign('../admin/inc/logout.php'); </script>";
+        echo "<script> location.assign('logout.php'); </script>";
         die;
     }
 ?>
@@ -15,7 +15,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voters Panel - Online Voting System</title>
+    <title>Adminpanel - Online Voting System</title>
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
